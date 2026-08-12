@@ -430,5 +430,25 @@
     }, { threshold: 0.12 });
     items.forEach(el => io.observe(el));
   </script>
+  <script>
+    // Instagram/TikTok/Facebook in-app browsers on iOS run in a locked-down
+    // WKWebView that frequently swallows navigation to apps.apple.com (and,
+    // recursively, instagram.com/tiktok.com links opened from inside their
+    // own in-app browser). The "x-safari-https://" scheme is recognized by
+    // iOS as "hand this URL to Safari," which reliably breaks out of the
+    // in-app browser so the destination's normal universal-link handling
+    // (App Store, Instagram, TikTok) takes over correctly.
+    (function () {
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPhone|iPad|iPod/.test(ua);
+      const isInAppBrowser = /Instagram|FBAN|FBAV|TikTok|BytedanceWebview|musical_ly/i.test(ua);
+      if (!isIOS || !isInAppBrowser) return;
+      document.querySelectorAll(
+        'a[href^="https://apps.apple.com"], a[href^="https://instagram.com"], a[href^="https://tiktok.com"]'
+      ).forEach((a) => {
+        a.setAttribute('href', a.getAttribute('href').replace('https://', 'x-safari-https://'));
+      });
+    })();
+  </script>
 </body>
 </html>
