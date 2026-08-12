@@ -223,16 +223,18 @@
   .iab-banner strong { font-weight: 800; }
   .iab-banner button {
     flex-shrink: 0; background: #fff; color: var(--accent); border: none; border-radius: 100px;
-    font-size: 13px; font-weight: 800; padding: 8px 16px; cursor: pointer;
+    font-size: 13px; font-weight: 800; padding: 8px 16px; cursor: pointer; transition: background .15s, color .15s;
+    min-width: 168px;
   }
+  .iab-banner button.copied { background: #1d1330; color: #fff; }
 </style>
 </head>
 <body>
 
   <div class="iab-banner" id="iab-banner">
     <div class="iab-banner-inner">
-      <p>Downloads don't work inside this in-app browser. Tap <strong>⋯</strong> (top right) → <strong>Open in Safari</strong>, or tap the button.</p>
-      <button id="iab-open-safari" type="button">Open in Safari</button>
+      <p>This in-app browser blocks App Store downloads. Tap the button to copy the link, then open it in Safari.</p>
+      <button id="iab-copy-link" type="button">Copy App Store Link</button>
     </div>
   </div>
 
@@ -456,38 +458,50 @@
     items.forEach(el => io.observe(el));
   </script>
   <script>
-    // Instagram/TikTok/Facebook in-app browsers on iOS run in a locked-down
-    // WKWebView that frequently blocks navigation to apps.apple.com outright
-    // (and, recursively, their own instagram.com/tiktok.com links opened
-    // from inside themselves) — independent of target="_blank" vs same-tab.
-    //
-    // The most reliable escape is the "x-safari-https://" scheme, which iOS
-    // recognizes as "hand this URL to Safari." It works best applied to the
-    // *current page* (a same-origin, clearly benign "open this webpage in
-    // Safari" request) rather than to an outbound apps.apple.com link, which
-    // these in-app browsers are more likely to specifically intercept. So:
-    // show a persistent banner with an explicit "Open in Safari" button
-    // (real user gesture, not an auto-redirect) that relaunches this exact
-    // page in Safari — once there, the App Store/Instagram/TikTok links all
-    // work normally, matching what already works when the URL is typed
-    // directly into Safari. The banner also states Instagram's own native
-    // "Open in Safari" menu option as a guaranteed fallback we don't control.
+    // Instagram/TikTok's in-app browsers control whether a tapped link gets
+    // handed off to Safari/the App Store app or swallowed silently — that
+    // decision happens inside their app code, not ours. Scheme tricks like
+    // "x-safari-https://" only work if the host app chooses to forward an
+    // unrecognized scheme to iOS, and testing confirmed Instagram currently
+    // does not for this flow. There's no client-side fix for that, so
+    // instead of pretending to auto-redirect, show a banner with a
+    // guaranteed fallback: copy the App Store link to the clipboard so the
+    // user can open Safari themselves and paste it. This doesn't depend on
+    // Instagram cooperating at all.
     (function () {
       const ua = navigator.userAgent || '';
       const isIOS = /iPhone|iPad|iPod/.test(ua);
       const isInAppBrowser = /Instagram|FBAN|FBAV|TikTok|BytedanceWebview|musical_ly/i.test(ua);
       if (!isIOS || !isInAppBrowser) return;
 
-      document.querySelectorAll(
-        'a[href^="https://apps.apple.com"], a[href^="https://instagram.com"], a[href^="https://tiktok.com"]'
-      ).forEach((a) => {
-        a.setAttribute('href', a.getAttribute('href').replace('https://', 'x-safari-https://'));
-      });
+      document.getElementById('iab-banner').classList.add('show');
 
-      const banner = document.getElementById('iab-banner');
-      banner.classList.add('show');
-      document.getElementById('iab-open-safari').addEventListener('click', () => {
-        window.location.href = window.location.href.replace(/^https:\/\//, 'x-safari-https://');
+      const btn = document.getElementById('iab-copy-link');
+      const appStoreUrl = 'https://apps.apple.com/app/id6754956163';
+      btn.addEventListener('click', async () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(appStoreUrl);
+          } else {
+            const tmp = document.createElement('textarea');
+            tmp.value = appStoreUrl;
+            tmp.style.position = 'fixed';
+            tmp.style.opacity = '0';
+            document.body.appendChild(tmp);
+            tmp.focus();
+            tmp.select();
+            document.execCommand('copy');
+            document.body.removeChild(tmp);
+          }
+          btn.textContent = 'Copied! Open Safari →';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy App Store Link';
+            btn.classList.remove('copied');
+          }, 4000);
+        } catch (err) {
+          btn.textContent = 'Copy failed — long-press link to copy';
+        }
       });
     })();
   </script>
