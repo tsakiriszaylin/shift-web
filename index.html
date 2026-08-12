@@ -1,165 +1,371 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHIFT — EFT Tapping</title>
-  <meta name="description" content="Guided EFT tapping sessions to help you process emotions, release stress, and shift your state — in minutes." />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0a0a12; --bg2: #12121e; --border: #1e1e30;
-      --text: #e8e8f0; --muted: #7b7b99;
-      --accent: #8b7fd4; --accent-light: #b0a6e8; --white: #ffffff;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      min-height: 100vh; overflow-x: hidden;
-    }
-    .bg-glow {
-      position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 800px; border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(139,127,212,0.12) 0%, transparent 70%);
-      pointer-events: none; z-index: 0;
-    }
-    .page {
-      position: relative; z-index: 1; display: flex; flex-direction: column;
-      align-items: center; min-height: 100vh; padding: 64px 24px 48px;
-    }
-    nav {
-      width: 100%; max-width: 640px; display: flex;
-      justify-content: space-between; align-items: center; margin-bottom: 80px;
-    }
-    .nav-logo { font-size: 18px; font-weight: 700; letter-spacing: 0.18em; color: var(--white); }
-    .nav-badge {
-      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--accent-light); background: rgba(139,127,212,0.12);
-      border: 1px solid rgba(139,127,212,0.25); border-radius: 100px; padding: 4px 12px;
-    }
-    .hero {
-      width: 100%; max-width: 600px; text-align: center; flex: 1;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
-    h1 {
-      font-size: clamp(36px, 7vw, 64px); font-weight: 700; line-height: 1.1;
-      color: var(--white); letter-spacing: -0.02em; margin-bottom: 24px;
-    }
-    h1 .accent {
-      background: linear-gradient(135deg, #b0a6e8, #8b7fd4);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .subtitle {
-      font-size: 18px; line-height: 1.6; color: var(--muted);
-      max-width: 440px; margin: 0 auto 48px;
-    }
-    .form-wrapper { width: 100%; max-width: 420px; }
-    form { display: flex; flex-direction: column; gap: 12px; }
-    input[type="email"] {
-      width: 100%; background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 12px; color: var(--white); font-size: 16px;
-      padding: 16px 20px; outline: none; transition: border-color 0.2s;
-    }
-    input[type="email"]::placeholder { color: var(--muted); }
-    input[type="email"]:focus { border-color: var(--accent); }
-    button[type="submit"] {
-      width: 100%; background: var(--accent); border: none; border-radius: 12px;
-      color: var(--white); cursor: pointer; font-size: 16px; font-weight: 600;
-      letter-spacing: 0.02em; padding: 16px 20px; transition: background 0.2s, transform 0.1s;
-    }
-    button[type="submit"]:hover { background: #7a6fc4; }
-    button[type="submit"]:active { transform: scale(0.98); }
-    .form-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; }
-    .success {
-      display: none; text-align: center; padding: 24px;
-      background: rgba(139,127,212,0.08); border: 1px solid rgba(139,127,212,0.2);
-      border-radius: 16px;
-    }
-    .success h3 { font-size: 18px; color: var(--white); margin-bottom: 8px; }
-    .success p { font-size: 14px; color: var(--muted); }
-    .features {
-      width: 100%; max-width: 600px; margin-top: 80px;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
-    }
-    .feature {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 24px 20px; text-align: center;
-    }
-    .feature-icon { font-size: 24px; margin-bottom: 12px; }
-    .feature-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
-    .feature-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-    footer {
-      margin-top: 80px; width: 100%; max-width: 600px; display: flex;
-      justify-content: space-between; align-items: center; font-size: 12px;
-      color: var(--muted); border-top: 1px solid var(--border); padding-top: 24px;
-    }
-    footer a { color: var(--muted); text-decoration: none; }
-    footer a:hover { color: var(--text); }
-    @media (max-width: 480px) {
-      .page { padding: 40px 20px 40px; }
-      nav { margin-bottom: 60px; }
-      footer { flex-direction: column; gap: 12px; text-align: center; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SHIFT — Guided EFT Tapping, now on the App Store</title>
+<meta name="description" content="SHIFT is a guided EFT tapping app for the specific moments that throw your day off. Tell it how you feel, follow synced visual tapping cues, and reset in minutes. Free on the App Store." />
+<meta property="og:title" content="SHIFT — Guided EFT Tapping" />
+<meta property="og:description" content="Short guided EFT tapping sessions for stress, sleep, confidence, and everyday emotional resets. Now available on the App Store." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://earlyshift.app/assets/img/screenshots/01-home.webp" />
+<link rel="icon" href="assets/img/icon.png" />
+<link rel="apple-touch-icon" href="assets/img/icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Gilroy';
+    src: url('assets/fonts/Gilroy-Regular.ttf') format('truetype');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Gilroy';
+    src: url('assets/fonts/Gilroy-Semibold.ttf') format('truetype');
+    font-weight: 600; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Gilroy';
+    src: url('assets/fonts/Gilroy-Bold.ttf') format('truetype');
+    font-weight: 700; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Gilroy';
+    src: url('assets/fonts/Gilroy-Extrabold.ttf') format('truetype');
+    font-weight: 800; font-style: normal; font-display: swap;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #05132b;
+    --bg2: #0b2044;
+    --bg3: #0e2750;
+    --border: rgba(255,255,255,0.09);
+    --text: #f5f6fb;
+    --muted: #93a0c2;
+    --accent: #8759fc;
+    --accent-light: #b39dff;
+    --accent-pink: #ffb3d6;
+    --max: 1120px;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Gilroy', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; letter-spacing: -0.01em; }
+  .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  /* background glows */
+  .glow { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+  .glow-hero-1 { width: 620px; height: 620px; top: -220px; left: 50%; transform: translateX(-38%); background: radial-gradient(circle, rgba(135,89,252,0.30) 0%, transparent 70%); }
+  .glow-hero-2 { width: 520px; height: 520px; top: 60px; right: -160px; background: radial-gradient(circle, rgba(255,179,214,0.16) 0%, transparent 70%); }
+  .glow-mid { width: 700px; height: 700px; left: -260px; background: radial-gradient(circle, rgba(135,89,252,0.14) 0%, transparent 70%); }
+
+  /* nav */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(5,19,43,0.72); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav.wrap { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; padding-bottom: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; letter-spacing: 0.02em; }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .nav-links { display: flex; align-items: center; gap: 32px; font-size: 14px; color: var(--muted); }
+  .nav-links a { text-decoration: none; transition: color .15s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--accent); color: #fff; font-size: 14px; font-weight: 700;
+    padding: 10px 20px; border-radius: 100px; text-decoration: none;
+    box-shadow: 0 6px 18px rgba(135,89,252,0.35);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(135,89,252,0.45); }
+  .nav-toggle { display: none; }
+
+  /* hero */
+  .hero { position: relative; padding: 72px 0 40px; overflow: hidden; }
+  .hero-grid { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 720px; margin: 0 auto; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-light);
+    background: rgba(135,89,252,0.12); border: 1px solid rgba(135,89,252,0.28);
+    border-radius: 100px; padding: 7px 14px; margin-bottom: 24px;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+  h1.headline { font-size: clamp(30px, 3.6vw, 42px); line-height: 1.15; color: #fff; margin-bottom: 16px; max-width: 660px; }
+  h1.headline em { font-style: normal; background: linear-gradient(135deg, var(--accent-light), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { font-size: 17px; color: var(--muted); max-width: 470px; margin-bottom: 36px; }
+  .cta-row { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; margin-bottom: 36px; }
+
+  .appstore-badge { display: inline-flex; align-items: center; gap: 10px; background: #000; border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; padding: 10px 18px; text-decoration: none; transition: transform .15s, background .15s; }
+  .appstore-badge:hover { transform: translateY(-1px); background: #111; }
+  .appstore-badge svg { width: 24px; height: 24px; fill: #fff; flex-shrink: 0; }
+  .appstore-badge .badge-text { line-height: 1.15; }
+  .appstore-badge .badge-text small { display: block; font-size: 10px; color: #cfcfcf; font-weight: 400; }
+  .appstore-badge .badge-text strong { display: block; font-size: 18px; font-weight: 600; font-family: -apple-system, sans-serif; color: #fff; }
+
+  .secondary-link { font-size: 14.5px; font-weight: 600; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
+  .secondary-link:hover { color: var(--accent-light); }
+
+  .stat-row { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; margin-bottom: 48px; }
+  .stat { text-align: center; }
+  .stat b { display: block; font-size: 20px; font-weight: 800; color: #fff; }
+  .stat span { font-size: 12.5px; color: var(--muted); }
+
+  .hero-visual { position: relative; display: flex; justify-content: center; }
+  .phone-shot { width: 340px; border-radius: 26px; box-shadow: 0 40px 90px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.06); }
+  .hero-visual::after {
+    content: ''; position: absolute; width: 380px; height: 380px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(135,89,252,0.35), transparent 70%);
+    z-index: -1; filter: blur(20px);
+  }
+
+  section { position: relative; padding: 90px 0; }
+  .eyebrow { font-size: 12.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-light); margin-bottom: 12px; }
+  .section-head { max-width: 620px; margin-bottom: 52px; }
+  .section-head h2 { font-size: clamp(28px, 3.2vw, 38px); color: #fff; margin-bottom: 14px; }
+  .section-head p { color: var(--muted); font-size: 16px; }
+
+  /* how it works */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .step { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 32px 26px; position: relative; }
+  .step .num { font-family: 'Fraunces', serif; font-size: 15px; color: var(--accent-light); font-weight: 600; margin-bottom: 18px; display: inline-block; }
+  .step h3 { font-size: 19px; color: #fff; margin-bottom: 10px; font-weight: 600; }
+  .step p { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+
+  /* showcase */
+  .showcase-scroll {
+    display: flex; gap: 20px; overflow-x: auto; padding: 8px 4px 24px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  }
+  .showcase-scroll::-webkit-scrollbar { height: 8px; }
+  .showcase-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+  .showcase-item { flex: 0 0 auto; width: 240px; scroll-snap-align: start; }
+  .showcase-item img { border-radius: 18px; border: 1px solid var(--border); box-shadow: 0 20px 50px -20px rgba(0,0,0,0.55); }
+
+  /* features */
+  .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .feature-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 18px; padding: 24px 20px; }
+  .feature-card .icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(135,89,252,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 16px; }
+  .feature-card h3 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; font-family: 'Gilroy'; }
+  .feature-card p { font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+
+  /* safety note */
+  .safety { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 28px 32px; display: flex; gap: 18px; align-items: flex-start; }
+  .safety .icon { font-size: 20px; flex-shrink: 0; }
+  .safety p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+  .safety strong { color: var(--text); }
+
+  /* final CTA */
+  .final-cta { text-align: center; background: linear-gradient(180deg, var(--bg2), var(--bg3)); border: 1px solid var(--border); border-radius: 28px; padding: 72px 32px; }
+  .final-cta h2 { font-size: clamp(28px, 3.6vw, 42px); color: #fff; margin-bottom: 16px; }
+  .final-cta p { color: var(--muted); font-size: 16px; max-width: 440px; margin: 0 auto 32px; }
+  .final-cta .cta-row { justify-content: center; margin-bottom: 0; }
+
+  footer { border-top: 1px solid var(--border); padding: 56px 0 40px; }
+  .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+  .footer-brand .brand { margin-bottom: 12px; }
+  .footer-brand p { font-size: 13.5px; color: var(--muted); max-width: 260px; line-height: 1.6; }
+  .footer-col h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 16px; }
+  .footer-col a { display: block; font-size: 14px; color: var(--text); text-decoration: none; margin-bottom: 12px; }
+  .footer-col a:hover { color: var(--accent-light); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--muted); flex-wrap: wrap; gap: 12px; }
+
+  [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+  [data-reveal].in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .phone-shot { width: 260px; }
+    .nav-links { display: none; }
+    .steps { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 520px) {
+    .features-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+    section { padding: 64px 0; }
+    .safety { flex-direction: column; }
+  }
+</style>
 </head>
 <body>
-  <div class="bg-glow"></div>
-  <div class="page">
-    <nav>
-      <span class="nav-logo">SHIFT</span>
-      <span class="nav-badge">Guided EFT tapping</span>
+
+  <header>
+    <nav class="wrap">
+      <a href="#top" class="brand"><img src="assets/img/icon.webp" alt="SHIFT" />SHIFT</a>
+      <div class="nav-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#showcase">Inside the app</a>
+        <a href="#features">Features</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a class="nav-cta" href="https://apps.apple.com/app/id6754956163" target="_blank" rel="noopener">Get the App</a>
     </nav>
-    <main class="hero">
-      <h1>Shift your state<br>in <span class="accent">minutes.</span></h1>
-      <p class="subtitle">
-        Guided EFT tapping sessions to help you process emotions,
-        release stress, and move through whatever you're feeling in minutes.
-      </p>
-      <div class="form-wrapper">
-        <form id="waitlist-form" action="https://formspree.io/f/xrejwlja" method="POST">
-          <input type="hidden" name="_subject" value="New SHIFT waitlist signup" />
-          <input type="email" name="email" placeholder="Enter your email address" required autocomplete="email" />
-          <button type="submit">Join the Launch List</button>
-        </form>
-        <div class="success" id="success-msg">
-          <h3>You're on the list</h3>
-          <p>We'll reach out with launch updates. Thank you for supporting SHIFT.</p>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="glow glow-hero-1"></div>
+      <div class="glow glow-hero-2"></div>
+      <div class="wrap hero-grid">
+        <span class="pill"><span class="dot"></span>Now live on the App Store</span>
+        <h1 class="headline">Guided EFT tapping for the moments that <em>throw your day off.</em></h1>
+        <p class="hero-sub">Tell SHIFT what you're feeling and it matches you to a short, guided tapping session — synced visual cues, real audio guidance, done in a few minutes.</p>
+        <div class="cta-row">
+          <a class="appstore-badge" href="https://apps.apple.com/app/id6754956163" target="_blank" rel="noopener" aria-label="Download SHIFT on the App Store">
+            <svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+            <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
+          </a>
+          <a class="secondary-link" href="#how-it-works">See how it works ↓</a>
         </div>
-        <p class="form-note">For support, email supportshiftapp@gmail.com.</p>
-      </div>
-    </main>
-    <section class="features">
-      <div class="feature">
-        <div class="feature-icon">🫳</div>
-        <div class="feature-title">EFT Tapping</div>
-        <div class="feature-desc">Guided sessions to tap through stress, anxiety, and emotional blocks</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🎵</div>
-        <div class="feature-title">Background Music</div>
-        <div class="feature-desc">Layer calming music with your tapping sessions</div>
+        <div class="stat-row">
+          <div class="stat"><b>50</b><span>Guided sessions</span></div>
+          <div class="stat"><b>9</b><span>Tapping points to learn</span></div>
+          <div class="stat"><b>3</b><span>Guided voices</span></div>
+          <div class="stat"><b>Free</b><span>To start</span></div>
+        </div>
+        <div class="hero-visual">
+          <img class="phone-shot" src="assets/img/screenshots/01-home.webp" alt="SHIFT home screen: 'When your mind won't slow down' — recommended sessions and favorites" />
+        </div>
       </div>
     </section>
-    <footer>
-      <span>&copy; 2026 SHIFT</span>
-      <span><a href="privacy.html">Privacy Policy</a></span>
-      <span><a href="mailto:supportshiftapp@gmail.com">Support</a></span>
-      <span><a href="https://tiktok.com/@shift.tapping" target="_blank">@shift.tapping</a></span>
-    </footer>
-  </div>
+
+    <section id="how-it-works">
+      <div class="glow glow-mid" style="top: 20%;"></div>
+      <div class="wrap" style="position:relative;">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow">How it works</div>
+          <h2>Three steps between you and feeling steadier.</h2>
+          <p>No clinical terms, no long setup. Say what's going on and follow along.</p>
+        </div>
+        <div class="steps">
+          <div class="step" data-reveal>
+            <span class="num">01</span>
+            <h3>Say how you feel</h3>
+            <p>Search by feeling or moment — nervous before a presentation, replaying an awkward conversation, wide awake at 2am — instead of clinical terms.</p>
+          </div>
+          <div class="step" data-reveal>
+            <span class="num">02</span>
+            <h3>Get matched instantly</h3>
+            <p>SHIFT recommends a short session built for that exact moment, with a clear overview of duration, voice, and what to expect before you start.</p>
+          </div>
+          <div class="step" data-reveal>
+            <span class="num">03</span>
+            <h3>Tap along and reset</h3>
+            <p>Follow synced visual tapping-point guidance and gentle prompts designed to help you pause, regulate, and reset in a few minutes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="showcase">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow">Inside the app</div>
+          <h2>Built around specific, recognizable moments.</h2>
+          <p>Straight from the current App Store listing.</p>
+        </div>
+      </div>
+      <div class="showcase-scroll wrap" data-reveal>
+        <div class="showcase-item"><img src="assets/img/screenshots/01-home.webp" alt="Home screen with personalized session recommendations" loading="lazy" /></div>
+        <div class="showcase-item"><img src="assets/img/screenshots/02-explore.webp" alt="Explore screen to browse sessions by feeling or moment" loading="lazy" /></div>
+        <div class="showcase-item"><img src="assets/img/screenshots/03-session.webp" alt="Session detail screen with a clear overview before starting" loading="lazy" /></div>
+        <div class="showcase-item"><img src="assets/img/screenshots/04-player.webp" alt="Guided tapping player with synced visual cues" loading="lazy" /></div>
+        <div class="showcase-item"><img src="assets/img/screenshots/05-history.webp" alt="Weekly practice history and progress tracking" loading="lazy" /></div>
+        <div class="showcase-item"><img src="assets/img/screenshots/06-favorites.webp" alt="Favorites screen for saved sessions" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow">Features</div>
+          <h2>Everything you need to reset, nothing you don't.</h2>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card" data-reveal><div class="icon">🫳</div><h3>Guided EFT tapping</h3><p>Sessions matched to specific everyday moments, not generic wellness content.</p></div>
+          <div class="feature-card" data-reveal><div class="icon">🔍</div><h3>Search by feeling</h3><p>Browse by how you're feeling or what you're going through, not a diagnosis.</p></div>
+          <div class="feature-card" data-reveal><div class="icon">👆</div><h3>Visual tapping cues</h3><p>Synced on-screen guidance during every session — easy to follow, no experience needed.</p></div>
+          <div class="feature-card" data-reveal><div class="icon">📖</div><h3>Learn the Tapping Points</h3><p>Every session includes video demonstrations and how-to guidance for all nine tapping points.</p></div>
+          <div class="feature-card" data-reveal><div class="icon">✨</div><h3>Personalized picks</h3><p>Starter sessions recommended from your onboarding answers.</p></div>
+          <div class="feature-card" data-reveal><div class="icon">❤️</div><h3>Favorites</h3><p>Save what works for quick access whenever you need it again.</p></div>
+          <div class="feature-card" data-reveal><div class="icon">📈</div><h3>Weekly rhythm</h3><p>Practice history so you can see your consistency build over time.</p></div>
+          <div class="feature-card" data-reveal><div class="icon">🎵</div><h3>Background music</h3><p>Layer optional calming music underneath any guided session.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap">
+        <div class="safety" data-reveal>
+          <span class="icon">ⓘ</span>
+          <p><strong>A quick note.</strong> SHIFT is not a replacement for medical care, therapy, or emergency support. If you're experiencing severe distress, a crisis, or symptoms that feel unsafe, please contact a qualified professional or emergency service.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="final-cta" data-reveal>
+          <h2>Ready to shift your state?</h2>
+          <p>Free to start. Takes less time to try than it did to read this page.</p>
+          <div class="cta-row">
+            <a class="appstore-badge" href="https://apps.apple.com/app/id6754956163" target="_blank" rel="noopener" aria-label="Download SHIFT on the App Store">
+              <svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+              <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#top" class="brand"><img src="assets/img/icon.webp" alt="SHIFT" />SHIFT</a>
+          <p>Guided EFT tapping for the specific, recognizable moments that throw your day off.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="#how-it-works">How it works</a>
+          <a href="#showcase">Inside the app</a>
+          <a href="#features">Features</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="mailto:supportshiftapp@gmail.com">Support</a>
+          <a href="privacy.html">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Follow</h4>
+          <a href="https://tiktok.com/@shift.tapping" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://instagram.com/shift.tapping" target="_blank" rel="noopener">Instagram</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 SHIFT. All rights reserved.</span>
+        <span>Made for the moments that throw your day off.</span>
+      </div>
+    </div>
+  </footer>
+
   <script>
-    const form = document.getElementById('waitlist-form');
-    const success = document.getElementById('success-msg');
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const data = new FormData(form);
-      try {
-        const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
-        if (res.ok) { form.style.display = 'none'; success.style.display = 'block'; }
-        else { alert('Something went wrong. Please try again.'); }
-      } catch (err) { alert('Something went wrong. Please try again.'); }
-    });
+    const items = document.querySelectorAll('[data-reveal]');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    items.forEach(el => io.observe(el));
   </script>
 </body>
 </html>
