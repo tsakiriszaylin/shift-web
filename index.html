@@ -157,6 +157,18 @@
   .feature-card h3 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; font-family: 'Gilroy'; }
   .feature-card p { font-size: 13.5px; color: var(--muted); line-height: 1.55; }
 
+  /* faq */
+  .faq-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+  .faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 4px 24px; }
+  .faq-item summary {
+    list-style: none; cursor: pointer; padding: 20px 0; font-weight: 700; font-size: 15.5px;
+    color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary .plus { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: rgba(135,89,252,0.15); color: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 16px; transition: transform .2s; }
+  .faq-item[open] summary .plus { transform: rotate(45deg); }
+  .faq-item p { font-size: 14.5px; color: var(--muted); line-height: 1.65; padding: 0 0 22px; }
+
   /* safety note */
   .safety { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 28px 32px; display: flex; gap: 18px; align-items: flex-start; }
   .safety .icon { font-size: 20px; flex-shrink: 0; }
@@ -306,6 +318,53 @@
 
     <section id="faq">
       <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow">FAQ</div>
+          <h2>Questions, answered.</h2>
+          <p>The same answers you'll find in the app under Profile → Help &amp; Support.</p>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item" data-reveal>
+            <summary>What is tapping?<span class="plus">+</span></summary>
+            <p>Tapping is a self-guided wellness practice inspired by Emotional Freedom Techniques (EFT). SHIFT combines gentle tapping prompts with spoken reflection.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>Do I need experience?<span class="plus">+</span></summary>
+            <p>No. Every session tells you where to tap, and the player menu keeps the tapping point guide available whenever you need it.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>How do I save a session?<span class="plus">+</span></summary>
+            <p>Tap the heart on any session card or description image. Saved sessions appear in the My Favorites section of the home screen.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>Can I change the background sound?<span class="plus">+</span></summary>
+            <p>Yes. Choose and preview a track from Profile → Background Music, or adjust it from the session description or player menu.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>Is SHIFT medical care or therapy?<span class="plus">+</span></summary>
+            <p>No. SHIFT is intended for general wellness and self-care and is not medical advice, diagnosis, therapy, or a substitute for professional care.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>How is SHIFT different from working with an EFT practitioner?<span class="plus">+</span></summary>
+            <p>SHIFT is an EFT-inspired, adapted wellness tool for everyday moments, common stressors, and less intense feelings. It does not replace an EFT practitioner, licensed therapist, or other qualified professional. Trauma, anxiety disorders, phobias, and intense or persistent emotional experiences deserve individualized professional support and cannot be addressed by this app.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>What is SHIFT designed to make easier?<span class="plus">+</span></summary>
+            <p>SHIFT makes brief tapping support accessible in everyday life — before a difficult conversation, during a stressful moment, or whenever you want help slowing down and resetting.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>How is my weekly rhythm calculated?<span class="plus">+</span></summary>
+            <p>A day fills after you complete a session. History includes sessions you complete during the current week and resets with the new week.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>Can I pause or leave a session?<span class="plus">+</span></summary>
+            <p>Yes. You can pause, skip backward or forward, or exit at any time. A session appears in History only after you complete it.</p>
+          </details>
+          <details class="faq-item" data-reveal>
+            <summary>Why is a tapping point glowing?<span class="plus">+</span></summary>
+            <p>The glowing point is the location used at that moment in the guided session. Open Learn the Tapping Points from the player menu for detailed demonstrations.</p>
+          </details>
+        </div>
         <div class="safety" data-reveal>
           <span class="icon">ⓘ</span>
           <p><strong>A quick note.</strong> SHIFT is not a replacement for medical care, therapy, or emergency support. If you're experiencing severe distress, a crisis, or symptoms that feel unsafe, please contact a qualified professional or emergency service.</p>
