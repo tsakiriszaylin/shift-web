@@ -207,9 +207,34 @@
     section { padding: 64px 0; }
     .safety { flex-direction: column; }
   }
+
+  /* in-app browser banner */
+  .iab-banner {
+    display: none; position: sticky; top: 0; z-index: 100;
+    background: linear-gradient(135deg, var(--accent), #6a4fe0);
+    color: #fff; padding: 12px 20px; font-size: 13.5px;
+  }
+  .iab-banner.show { display: flex; }
+  .iab-banner-inner {
+    width: 100%; max-width: var(--max); margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  }
+  .iab-banner p { margin: 0; line-height: 1.4; }
+  .iab-banner strong { font-weight: 800; }
+  .iab-banner button {
+    flex-shrink: 0; background: #fff; color: var(--accent); border: none; border-radius: 100px;
+    font-size: 13px; font-weight: 800; padding: 8px 16px; cursor: pointer;
+  }
 </style>
 </head>
 <body>
+
+  <div class="iab-banner" id="iab-banner">
+    <div class="iab-banner-inner">
+      <p>Downloads don't work inside this in-app browser. Tap <strong>⋯</strong> (top right) → <strong>Open in Safari</strong>, or tap the button.</p>
+      <button id="iab-open-safari" type="button">Open in Safari</button>
+    </div>
+  </div>
 
   <header>
     <nav class="wrap">
@@ -432,21 +457,37 @@
   </script>
   <script>
     // Instagram/TikTok/Facebook in-app browsers on iOS run in a locked-down
-    // WKWebView that frequently swallows navigation to apps.apple.com (and,
-    // recursively, instagram.com/tiktok.com links opened from inside their
-    // own in-app browser). The "x-safari-https://" scheme is recognized by
-    // iOS as "hand this URL to Safari," which reliably breaks out of the
-    // in-app browser so the destination's normal universal-link handling
-    // (App Store, Instagram, TikTok) takes over correctly.
+    // WKWebView that frequently blocks navigation to apps.apple.com outright
+    // (and, recursively, their own instagram.com/tiktok.com links opened
+    // from inside themselves) — independent of target="_blank" vs same-tab.
+    //
+    // The most reliable escape is the "x-safari-https://" scheme, which iOS
+    // recognizes as "hand this URL to Safari." It works best applied to the
+    // *current page* (a same-origin, clearly benign "open this webpage in
+    // Safari" request) rather than to an outbound apps.apple.com link, which
+    // these in-app browsers are more likely to specifically intercept. So:
+    // show a persistent banner with an explicit "Open in Safari" button
+    // (real user gesture, not an auto-redirect) that relaunches this exact
+    // page in Safari — once there, the App Store/Instagram/TikTok links all
+    // work normally, matching what already works when the URL is typed
+    // directly into Safari. The banner also states Instagram's own native
+    // "Open in Safari" menu option as a guaranteed fallback we don't control.
     (function () {
       const ua = navigator.userAgent || '';
       const isIOS = /iPhone|iPad|iPod/.test(ua);
       const isInAppBrowser = /Instagram|FBAN|FBAV|TikTok|BytedanceWebview|musical_ly/i.test(ua);
       if (!isIOS || !isInAppBrowser) return;
+
       document.querySelectorAll(
         'a[href^="https://apps.apple.com"], a[href^="https://instagram.com"], a[href^="https://tiktok.com"]'
       ).forEach((a) => {
         a.setAttribute('href', a.getAttribute('href').replace('https://', 'x-safari-https://'));
+      });
+
+      const banner = document.getElementById('iab-banner');
+      banner.classList.add('show');
+      document.getElementById('iab-open-safari').addEventListener('click', () => {
+        window.location.href = window.location.href.replace(/^https:\/\//, 'x-safari-https://');
       });
     })();
   </script>
