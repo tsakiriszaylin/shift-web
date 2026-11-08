@@ -80,12 +80,22 @@
     if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ block: 'start' });
   }
 
+  const SHOWN_FEELINGS = 8;
+  function feelingButton(f) {
+    return `<button class="feeling" data-feeling="${esc(f.id)}">${esc(f.label)}</button>`;
+  }
+  function feelingGrid() {
+    return feelings.slice(0, SHOWN_FEELINGS).map(feelingButton).join('')
+      + (feelings.length > SHOWN_FEELINGS ? '<button class="feeling more" data-more>More feelings</button>' : '');
+  }
+  const durationSort = (a, b) => (a.kind === b.kind ? 0 : a.kind === 'quick' ? -1 : 1);
+
   function renderHome() {
     const last = store.last && byId[store.last];
     if (embedded) {
       root.innerHTML = `<div class="screen">
         <h2 class="first">What's going on right now?</h2>
-        <div class="feelings">${feelings.map((f) => `<button class="feeling" data-feeling="${esc(f.id)}">${esc(f.label)}</button>`).join('')}</div>
+        <div class="feelings">${feelingGrid()}</div>
         <button class="textbtn" data-all>See all ${sessions.length} sessions</button>
         <h2>Not sure? Start here.</h2>
         ${card(starter)}
@@ -100,7 +110,7 @@
       <p class="lede">A guided EFT tapping session, right here in your browser. No download. No sign-up.</p>
       ${last ? `<h2>Last time</h2>${card(last)}` : ''}
       <h2>What's going on right now?</h2>
-      <div class="feelings">${feelings.map((f) => `<button class="feeling" data-feeling="${esc(f.id)}">${esc(f.label)}</button>`).join('')}</div>
+      <div class="feelings">${feelingGrid()}</div>
       <button class="textbtn" data-all>See all ${sessions.length} sessions</button>
       <details><summary>What is tapping?</summary>
         <p>EFT tapping means gently tapping on points on your face and body while you name what you're feeling. A voice guides you through it, and the picture shows you where to tap.</p>
@@ -112,12 +122,28 @@
 
   function renderFeeling(id) {
     const feeling = feelings.find((f) => f.id === id);
-    const list = feeling ? feeling.sessions.map((i) => byId[i]) : sessions;
+    if (!feeling) { renderAll(); return; }
+    const list = feeling.sessions.map((i) => byId[i]).sort(durationSort);
+    const hasQuick = list.some((s) => s.kind === 'quick');
     root.innerHTML = `<main class="screen">
       ${nav(backBtn)}
-      <h1>${feeling ? esc(feeling.label) : 'All sessions'}</h1>
-      <p class="lede">${feeling ? 'Pick the one that fits. The short one is a good place to start.' : 'Pick the one that fits.'}</p>
+      <h1>${esc(feeling.label)}</h1>
+      <p class="lede">${hasQuick ? 'Pick the one that fits. The short ones are a good place to start.' : 'Pick the one that fits.'}</p>
       <div style="margin-top:20px">${list.map(card).join('')}</div>
+      ${legal()}
+    </main>`;
+  }
+
+  const feelingsOf = (id) => feelings.filter((f) => f.sessions.includes(id)).map((f) => f.label).join(' ');
+
+  function renderAll() {
+    const categories = [...new Set(sessions.map((s) => s.category))].sort();
+    root.innerHTML = `<main class="screen">
+      ${nav(backBtn)}
+      <h1>All sessions</h1>
+      <input class="search" id="search" type="search" placeholder="Search by feeling or moment" aria-label="Search sessions" autocomplete="off">
+      <div id="all-list">${categories.map((c) => `<section data-cat><h2>${esc(c)}</h2>${sessions.filter((s) => s.category === c).sort(durationSort).map((s) => `<div data-find="${esc(`${s.title} ${s.subtitle} ${s.about} ${s.category} ${feelingsOf(s.id)}`.toLowerCase())}">${card(s)}</div>`).join('')}</section>`).join('')}</div>
+      <p class="lede" id="no-match" hidden>Nothing matches that yet. Try a simpler word, like "work" or "sleep".</p>
       ${legal()}
     </main>`;
   }
@@ -157,7 +183,7 @@
       ${result}${care}
       <button class="primary" data-again>Tap this one again</button>
       <button class="secondary" data-home>Try a different session</button>
-      ${!isAndroid ? `<p class="promo">Want more sessions? <a data-app="done" href="${esc(appLink)}" rel="noopener">SHIFT is free on iPhone.</a></p>` : ''}
+      ${!isAndroid ? `<p class="promo">Keep it on your phone. <a data-app="done" href="${esc(appLink)}" rel="noopener">SHIFT is free on iPhone.</a></p>` : ''}
       ${legal()}
     </main>`;
   }
@@ -502,6 +528,7 @@
     if (d.back !== undefined) { history.back(); return; }
     if (d.home !== undefined) { current = null; replace('home'); renderHome(); toTop(); return; }
     if (d.feeling) { track('pick', { feeling: d.feeling }); push('feeling', { id: d.feeling }); show({ screen: 'feeling', id: d.feeling }); return; }
+    if (d.more !== undefined) { t.parentElement.innerHTML = feelings.map(feelingButton).join(''); return; }
     if (d.all !== undefined) { push('feeling', { id: null }); show({ screen: 'feeling', id: null }); return; }
     if (d.session) { push('start', { id: d.session }); show({ screen: 'start', id: d.session }); return; }
     if (d.app) { track('app_click', { where: d.app }); return; }
@@ -522,6 +549,14 @@
     if (d.retry !== undefined) current.handlers.retry();
   });
   root.addEventListener('input', (ev) => {
+    if (ev.target.id === 'search') {
+      const q = ev.target.value.trim().toLowerCase();
+      let found = 0;
+      root.querySelectorAll('[data-find]').forEach((n) => { const hit = n.dataset.find.includes(q); n.hidden = !hit; found += hit; });
+      root.querySelectorAll('[data-cat]').forEach((n) => { n.hidden = !n.querySelector('[data-find]:not([hidden])'); });
+      root.querySelector('#no-match').hidden = found > 0;
+      return;
+    }
     if (ev.target.id === 'seek' && current && current.handlers) { if (!current.scrubbing) current.handlers.scrubStart(); current.handlers.scrubMove(); }
   });
   root.addEventListener('change', (ev) => {

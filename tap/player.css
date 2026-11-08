@@ -90,8 +90,12 @@ details p{color:var(--muted);margin-bottom:10px}
 .tap-embed h2{font-size:20px;margin-top:22px}
 .tap-embed h2.first{font-size:22px;margin-top:6px}
 .tap-embed .feelings{grid-template-columns:1fr 1fr}
-.tap-embed .feeling{min-height:68px}
+.tap-embed .feeling{min-height:56px;padding:10px 14px}
 .tap-embed .legal{font-size:13px;padding-top:14px}
+.search{width:100%;margin-top:16px;padding:13px 16px;border-radius:12px;border:1px solid var(--border);background:var(--panel);color:var(--text);font:inherit;-webkit-appearance:none;appearance:none}
+.search::placeholder{color:var(--muted)}
+[hidden]{display:none!important}
+.feeling.more{background:none;color:var(--lav)}
 .embed-art{display:none}
 @media (min-width:960px){.embed-art{display:block;flex:1 1 0;min-height:0;width:100%;object-fit:contain;object-position:bottom;opacity:.28;margin-top:10px}}
 .tap-embed .player{height:100%;max-width:none;padding:6px 16px 12px}
