@@ -244,15 +244,15 @@
 
     root.innerHTML = `<main class="player">
       <div class="ptop"><button class="close" data-close aria-label="End session">${icon.close}</button><span class="round" id="round"></span><span class="spacer"></span></div>
-      <div class="words" aria-live="polite"><div class="label" id="label"></div><div class="hint" id="hint"></div><div class="say" id="say">Getting your session ready…</div></div>
       <div class="dots" id="dots" aria-hidden="true">${POINT_ORDER.map(() => '<i></i>').join('')}</div>
+      <div class="words" aria-live="polite"><div class="label" id="label"></div><div class="say" id="say"></div></div>
       <div class="stage" id="stage">${Object.keys(VIEWS).map((n) => `<div class="view" data-view="${n}"><img src="/tap/art/${n}.webp" alt="" draggable="false"><div class="glows"></div></div>`).join('')}<div class="notice" id="notice" hidden></div></div>
       <div class="time"><span id="pos">0:00</span><input id="seek" type="range" min="0" max="${s.minutes * 60000}" value="0" step="250" aria-label="Session position"><span id="dur"></span></div>
       <div class="ctrl"><button class="skip" data-skip="-10" aria-label="Back 10 seconds">${icon.back10}</button><button class="pp" id="pp" aria-label="Pause">${icon.pause}</button><button class="skip" data-skip="10" aria-label="Forward 10 seconds">${icon.fwd10}</button></div>
     </main>`;
 
     const $ = (sel) => root.querySelector(sel);
-    const el = { round: $('#round'), label: $('#label'), hint: $('#hint'), say: $('#say'), dots: [...root.querySelectorAll('#dots i')], stage: $('#stage'), pos: $('#pos'), dur: $('#dur'), seek: $('#seek'), pp: $('#pp'), notice: $('#notice'), views: Object.fromEntries([...root.querySelectorAll('.view')].map((v) => [v.dataset.view, v])) };
+    const el = { round: $('#round'), label: $('#label'), say: $('#say'), dots: [...root.querySelectorAll('#dots i')], stage: $('#stage'), pos: $('#pos'), dur: $('#dur'), seek: $('#seek'), pp: $('#pp'), notice: $('#notice'), views: Object.fromEntries([...root.querySelectorAll('.view')].map((v) => [v.dataset.view, v])) };
 
     const state = {
       id, s, playId, before, audio, timeline: [], rounds: 1, dur: 0, listened: 0, lastT: 0, started: false, finished: false, marks: new Set(),
@@ -350,19 +350,12 @@
       state.seg = seg;
       state.phase = phase;
 
-      if (isPoint) {
-        el.label.textContent = POINT_NAME[seg.p];
-        el.hint.textContent = phase === 'say' ? 'Repeat after me' : '';
-        el.say.className = phase === 'say' ? 'say' : 'say dim';
-        el.say.textContent = phase === 'say' ? seg.say : seg.ins;
-      } else {
-        el.label.textContent = '';
-        el.hint.textContent = '';
-        el.say.className = 'say long';
-        el.say.textContent = seg.text;
-      }
-      el.round.textContent = state.rounds > 1 && seg.r ? `Round ${seg.r} of ${state.rounds}` : '';
+      // Like the app: only the point and the phrase to repeat. The intro,
+      // instructions, breaks between rounds and closing words are audio-only.
+      el.label.textContent = isPoint ? POINT_NAME[seg.p] : '';
+      el.say.textContent = isPoint && phase === 'say' ? seg.say : '';
       const latest = state.timeline.filter((g) => g.t === 'point' && g.s <= at).pop();
+      el.round.textContent = state.rounds > 1 ? `Round ${seg.r || (latest ? latest.r : 1)} of ${state.rounds}` : s.title;
       const idx = isPoint ? POINT_ORDER.indexOf(seg.p) : latest ? 8 : -1;
       el.dots.forEach((d, i) => d.classList.toggle('on', i <= idx));
       setGlow(latest ? latest.p : 'side_of_hand', isPoint);
